@@ -9,3 +9,7 @@ To start the celery worker type:
 source key.sh
 celery worker -A datapump.datapump -B
 ```
+
+## Test
+
+To run pytest launch `pytest --cov-config .coveragerc --cov datapump`

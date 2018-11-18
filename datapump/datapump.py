@@ -13,7 +13,7 @@ DATASERVICE = os.environ['DATA_SERVICE']
 
 
 def push_to_dataservice(user_id, runs):
-    requests.post(DATASERVICE + '/users/' + str(user_id) + '/runs', json=runs)
+    return requests.post(DATASERVICE + '/users/' + str(user_id) + '/runs', json=runs)
 
 
 def fetch_all_runs():
