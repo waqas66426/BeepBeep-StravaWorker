@@ -9,7 +9,11 @@ from celery.task import periodic_task
 BACKEND = BROKER = 'redis://localhost:6379'
 celery = Celery(__name__, backend=BACKEND, broker=BROKER)
 
-DATASERVICE=os.environ['DATA_SERVICE']
+DATASERVICE = os.environ['DATA_SERVICE']
+
+
+def push_to_dataservice(user_id, runs):
+    requests.post(DATASERVICE + '/users/' + str(user_id) + '/runs', json=runs)
 
 
 def fetch_all_runs():
@@ -24,13 +28,9 @@ def fetch_all_runs():
             continue
 
         print('Fetching Strava for %s' % email)
-        runs_fetched[user['id']] = fetch_runs(user)
+        push_to_dataservice(user['id'], fetch_runs(user))
 
     return runs_fetched
-
-
-def push_to_dataservice(runs):
-    requests.post(DATASERVICE + '/add_runs', json=runs)
 
 
 def activity2run(activity):
@@ -59,9 +59,10 @@ def fetch_runs(user):
         runs.append(activity2run(activity))
     return runs
 
+
 @periodic_task(run_every=timedelta(seconds=300))
 def periodic_fetch():
-    push_to_dataservice(fetch_all_runs())
+    fetch_all_runs()
 
 
 if __name__ == '__main__':
