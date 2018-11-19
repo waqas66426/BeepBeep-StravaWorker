@@ -17,7 +17,7 @@ def push_to_dataservice(user_id, runs):
 
 
 def fetch_all_runs():
-    users = requests.get(DATASERVICE + '/users').json()['users']
+    users = requests.get(DATASERVICE + '/users').json()
     runs_fetched = {}
 
     for user in users:
